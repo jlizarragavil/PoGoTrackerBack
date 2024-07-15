@@ -42,8 +42,6 @@ public class XPTrackerService {
 			updatedXPTracker.setXpRecords(xpTracker.getXpRecords());
 			return xpTrackerRepository.save(updatedXPTracker);
 		} else {
-			// Handle the case where the XPTracker doesn't exist
-			// For example, throw an exception or return null
 			return null;
 		}
 	}
@@ -60,7 +58,6 @@ public class XPTrackerService {
                     case "xpRecords":
                         xpTracker.setXpRecords((List<XPRecord>) value);
                         break;
-                    // Añade más casos si tienes más campos que actualizar
                     default:
                         throw new IllegalArgumentException("Campo no válido: " + key);
                 }

@@ -78,7 +78,6 @@ public class XPTrackerController {
     
     @PatchMapping("/xpTracker/addXPRecord/{id}")
     public ResponseEntity<XPTracker> addXPRecord(@PathVariable String id, @RequestBody XPRecord xpRecordDTO) {
-        // Aquí procesas xpRecordDTO y actualizas XPTracker según sea necesario
         XPTracker updatedXPTracker = xpTrackerService.addXPRecord(id, xpRecordDTO.getTotalXP(), xpRecordDTO.getXpEvent(), xpRecordDTO.isLuckyEgg());
         
         if (updatedXPTracker != null) {
