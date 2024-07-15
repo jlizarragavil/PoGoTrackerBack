@@ -13,7 +13,7 @@ COPY src /app/src
 RUN mvn clean package -DskipTests
 
 # Etapa de ejecución
-FROM openjdk:17-jre-slim
+FROM openjdk:17-jdk-slim
 
 # Establecer el directorio de trabajo dentro del contenedor
 WORKDIR /app
