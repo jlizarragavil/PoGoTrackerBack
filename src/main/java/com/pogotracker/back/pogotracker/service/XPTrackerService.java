@@ -1,6 +1,8 @@
 package com.pogotracker.back.pogotracker.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -93,7 +95,22 @@ public class XPTrackerService {
 	        
 	        return xpTrackerRepository.save(xpTracker);
 	    } else {
-	        return null;
+	    	XPTracker xpTracker = new XPTracker();
+	    	xpTracker.setId(id);
+	    	xpTracker.setPlayerName(id);
+	    	List<XPRecord> xpRecords = new ArrayList<>();
+	    	XPRecord newXPRecord = new XPRecord();
+	    	newXPRecord.setTotalXP(newTotalXP);
+	    	newXPRecord.setDailyXPDifference(0);
+	    	newXPRecord.setDate(LocalDateTime.now());
+	    	double averageXp = 0.0;
+	        BigDecimal averageXpBigDecimal = BigDecimal.valueOf(averageXp);
+	    	newXPRecord.setAvgDailyXp(averageXpBigDecimal);
+	    	newXPRecord.setLuckyEgg(luckyEgg);
+	    	newXPRecord.setXpEvent(xpEvent);
+	    	xpRecords.add(newXPRecord);
+	    	xpTracker.setXpRecords(xpRecords);
+	    	return xpTrackerRepository.save(xpTracker);
 	    }
 	}
 	
