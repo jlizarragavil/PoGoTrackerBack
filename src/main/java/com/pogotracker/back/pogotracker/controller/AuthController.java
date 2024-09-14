@@ -1,6 +1,5 @@
 package com.pogotracker.back.pogotracker.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,15 +8,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pogotracker.back.pogotracker.entity.User;
-import com.pogotracker.back.pogotracker.service.AuthService;
+import com.pogotracker.back.pogotracker.services.AuthService;
 
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin()
 public class AuthController {
-    @Autowired
+   
     private AuthService authService;
 
+    public AuthController(AuthService authService) {
+    	this.authService = authService;
+    }
 
     @PostMapping("/login")
     public String login(@RequestParam String username, @RequestParam String password) {

@@ -1,4 +1,4 @@
-package com.pogotracker.back.pogotracker.service;
+package com.pogotracker.back.pogotracker.service.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -11,17 +11,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pogotracker.back.pogotracker.entity.XPTracker;
+import com.pogotracker.back.pogotracker.model.BattleLog;
 import com.pogotracker.back.pogotracker.model.XPRecord;
 import com.pogotracker.back.pogotracker.repository.XPTrackerRepository;
+import com.pogotracker.back.pogotracker.services.XPTrackerService;
 import com.pogotracker.back.pogotracker.utils.XPTrackerUtils;
 
 @Service
-public class XPTrackerService {
+public class XPTrackerServiceImpl implements XPTrackerService{
 
 	private final XPTrackerRepository xpTrackerRepository;
 
 	@Autowired
-	public XPTrackerService(XPTrackerRepository xpTrackerRepository) {
+	public XPTrackerServiceImpl(XPTrackerRepository xpTrackerRepository) {
 		this.xpTrackerRepository = xpTrackerRepository;
 	}
 
@@ -113,5 +115,27 @@ public class XPTrackerService {
 	    	return xpTrackerRepository.save(xpTracker);
 	    }
 	}
+	 @Override
+	    public XPTracker addBattleLog(String id, BattleLog battleLog) {
+	        Optional<XPTracker> existingXPTracker = xpTrackerRepository.findById(id);
+	        if (existingXPTracker.isPresent()) {
+	            XPTracker xpTracker = existingXPTracker.get();
+	            List<BattleLog> battleLogs = xpTracker.getBattleLog();
+	            if (battleLogs == null) {
+	                battleLogs = new ArrayList<>();
+	            }
+	            battleLogs.add(battleLog);
+	            xpTracker.setBattleLog(battleLogs);
+	            return xpTrackerRepository.save(xpTracker);
+	        } else {
+	            XPTracker xpTracker = new XPTracker();
+	            xpTracker.setId(id);
+	            xpTracker.setPlayerName(id);
+	            List<BattleLog> battleLogs = new ArrayList<>();
+	            battleLogs.add(battleLog);
+	            xpTracker.setBattleLog(battleLogs);
+	            return xpTrackerRepository.save(xpTracker);
+	        }
+	    }
 	
 }

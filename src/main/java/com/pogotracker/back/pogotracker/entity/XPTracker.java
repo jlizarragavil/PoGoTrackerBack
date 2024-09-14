@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import com.pogotracker.back.pogotracker.model.BattleLog;
 import com.pogotracker.back.pogotracker.model.XPRecord;
 
 @Document(collection = "xp_tracker")
@@ -16,7 +17,7 @@ public class XPTracker {
     private String id;
     private String playerName;
     private List<XPRecord> xpRecords;
-
+    private List<BattleLog> battleLog;
     // Getters y setters
     public String getId() {
         return id;
@@ -41,4 +42,13 @@ public class XPTracker {
     public void setXpRecords(List<XPRecord> xpRecords) {
         this.xpRecords = xpRecords;
     }
+
+	public List<BattleLog> getBattleLog() {
+		return battleLog;
+	}
+
+	public void setBattleLog(List<BattleLog> battleLog) {
+		this.battleLog = battleLog;
+	}
+    
 }

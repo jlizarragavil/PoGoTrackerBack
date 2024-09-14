@@ -15,12 +15,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pogotracker.back.pogotracker.entity.XPTracker;
+import com.pogotracker.back.pogotracker.model.BattleLog;
 import com.pogotracker.back.pogotracker.model.XPRecord;
-import com.pogotracker.back.pogotracker.service.XPTrackerService;
+import com.pogotracker.back.pogotracker.service.impl.XPTrackerServiceImpl;
+import com.pogotracker.back.pogotracker.services.XPTrackerService;
 
 @RestController
 @EnableMongoRepositories
@@ -29,8 +30,7 @@ public class XPTrackerController {
 
     private final XPTrackerService xpTrackerService;
 
-    @Autowired
-    public XPTrackerController(XPTrackerService xpTrackerService) {
+    public XPTrackerController(XPTrackerServiceImpl xpTrackerService) {
         this.xpTrackerService = xpTrackerService;
     }
 
@@ -85,5 +85,10 @@ public class XPTrackerController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+    @PostMapping("/xpTracker/{id}/battle-log")
+    public ResponseEntity<XPTracker> addBattleLog(@PathVariable String id, @RequestBody BattleLog battleLog) {
+        XPTracker updatedXPTracker = xpTrackerService.addBattleLog(id, battleLog);
+        return updatedXPTracker != null ? ResponseEntity.ok(updatedXPTracker) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }
