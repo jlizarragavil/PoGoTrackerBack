@@ -4,17 +4,17 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-
 public class BattleLog {
-    private String league; // Liga (Great, Ultra, Master, etc.)
-    private int victories;
-    private int defeats;
-    private int elo;
-    private int battlesInSet; // Número de batallas en un set
-    private int setNumber; // Número de set en el día
+	private String league;
+	private String subLeague;
+	private int victories;
+	private int defeats;
+	private int elo;
+	private int battlesInSet;
+	private int setNumber;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    private Date date;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+	private Date date;
 
 	public String getLeague() {
 		return league;
@@ -72,5 +72,12 @@ public class BattleLog {
 		this.date = date;
 	}
 
-    
+	public String getSubLeague() {
+		return subLeague;
+	}
+
+	public void setSubLeague(String subLeague) {
+		this.subLeague = subLeague;
+	}
+
 }

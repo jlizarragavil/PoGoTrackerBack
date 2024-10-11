@@ -4,17 +4,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pogotracker.back.pogotracker.entity.XPTracker;
@@ -86,9 +87,17 @@ public class XPTrackerController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @PostMapping("/xpTracker/{id}/battle-log")
-    public ResponseEntity<XPTracker> addBattleLog(@PathVariable String id, @RequestBody BattleLog battleLog) {
-        XPTracker updatedXPTracker = xpTrackerService.addBattleLog(id, battleLog);
-        return updatedXPTracker != null ? ResponseEntity.ok(updatedXPTracker) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    
+    @DeleteMapping("/xpTracker/{id}/xpRecord")
+    public ResponseEntity<XPTracker> deleteXPRecord(@PathVariable String id, 
+                                                    @RequestParam long totalXP, 
+                                                    @RequestParam long dailyXPDifference) {
+        XPTracker updatedXPTracker = xpTrackerService.deleteXPRecord(id, totalXP, dailyXPDifference);
+        
+        if (updatedXPTracker != null) {
+            return new ResponseEntity<>(updatedXPTracker, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
