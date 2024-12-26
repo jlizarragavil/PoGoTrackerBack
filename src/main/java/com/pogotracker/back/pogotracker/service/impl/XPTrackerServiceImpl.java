@@ -86,7 +86,6 @@ public class XPTrackerServiceImpl implements XPTrackerService {
 			newXPRecord.setDate(LocalDateTime.now());
 			newXPRecord.setXpEvent(xpEvent);
 			newXPRecord.setLuckyEgg(luckyEgg);
-			// newXPRecord.setAvgDailyXp(newTotalXP/(xpRecords.size() + 1));
 			System.out.println(xpRecords.size() + 1);
 			xpRecords.add(newXPRecord);
 			xpTracker.setXpRecords(xpRecords);
@@ -116,30 +115,33 @@ public class XPTrackerServiceImpl implements XPTrackerService {
 
 	@Override
 	public XPTracker deleteXPRecord(String id, long totalXP, long dailyXPDifference) {
-		Optional<XPTracker> existingXPTracker = xpTrackerRepository.findById(id);
+	    Optional<XPTracker> existingXPTracker = xpTrackerRepository.findById(id);
 
-		if (existingXPTracker.isPresent()) {
-			XPTracker xpTracker = existingXPTracker.get();
-			List<XPRecord> xpRecords = xpTracker.getXpRecords();
+	    if (existingXPTracker.isPresent()) {
+	        XPTracker xpTracker = existingXPTracker.get();
+	        List<XPRecord> xpRecords = xpTracker.getXpRecords();
 
-			System.out.println("XPRecords antes de eliminar: " + xpRecords);
+	        System.out.println("XPRecords antes de eliminar: " + xpRecords);
 
-			xpRecords.removeIf(record -> {
-				boolean shouldRemove = record.getTotalXP() == totalXP
-						&& record.getDailyXPDifference() == dailyXPDifference;
-				if (shouldRemove) {
-					System.out.println("Eliminando registro: " + record);
-				}
-				return shouldRemove;
-			});
+	        xpRecords.removeIf(record -> {
+	            boolean shouldRemove = record.getTotalXP() == totalXP
+	                    && record.getDailyXPDifference() == dailyXPDifference;
+	            if (shouldRemove) {
+	                System.out.println("Eliminando registro: " + record);
+	            }
+	            return shouldRemove;
+	        });
 
-			xpTracker.setXpRecords(xpRecords);
-			XPTracker updatedXPTracker = xpTrackerRepository.save(xpTracker);
-			System.out.println("XPRecords después de eliminar: " + updatedXPTracker.getXpRecords());
-			return updatedXPTracker;
-		} else {
-			return null;
-		}
+	        XPTrackerUtils.recalculateDailyXPDifferences(xpRecords);
+	        XPTrackerUtils.calculateAndSetAverageDailyXPDifference(xpRecords);
+
+	        xpTracker.setXpRecords(xpRecords);
+	        XPTracker updatedXPTracker = xpTrackerRepository.save(xpTracker);
+	        System.out.println("XPRecords después de eliminar: " + updatedXPTracker.getXpRecords());
+	        return updatedXPTracker;
+	    } else {
+	        return null;
+	    }
 	}
 
 	
