@@ -1,5 +1,6 @@
 package com.pogotracker.back.pogotracker.controller;
 
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pogotracker.back.pogotracker.dto.BattleStats;
 import com.pogotracker.back.pogotracker.entity.XPTracker;
 import com.pogotracker.back.pogotracker.model.BattleLog;
+import com.pogotracker.back.pogotracker.model.DeleteRequest;
 import com.pogotracker.back.pogotracker.services.BattleLogService;
 
 
@@ -84,6 +86,15 @@ public class BattleLogController {
 	public ResponseEntity<XPTracker> resetBattleLogs(@PathVariable String id) {
 	    XPTracker xpTracker = battleLogService.resetBattleLogs(id);
 	    return ResponseEntity.ok(xpTracker);
+	}
+	@DeleteMapping("/{id}/battles")
+	public ResponseEntity<XPTracker> deleteBattleLogEntry(@PathVariable String id, @RequestBody DeleteRequest dateRequest) {
+	    try {
+	        XPTracker xpTracker = battleLogService.deleteBattleLogEntry(id, dateRequest.getDate());
+	        return ResponseEntity.ok(xpTracker);
+	    } catch (DateTimeParseException e) {
+	        return ResponseEntity.badRequest().body(null);
+	    }
 	}
 	
 	@GetMapping("/{id}/battles/league/{league}/subleague/{subLeague}")

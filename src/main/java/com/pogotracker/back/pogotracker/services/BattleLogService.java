@@ -15,6 +15,7 @@ public interface BattleLogService {
 	XPTracker updateBattleLog(String id, BattleLog updatedLog);
 	List<BattleLog> getBattleLogsByDateRange(String id, Date startDate, Date endDate);
 	XPTracker resetBattleLogs(String id);
+	XPTracker deleteBattleLogEntry(String id, String date);
 	List<BattleLog> getBattleLogsByLeagueAndSubLeague(String id, String league, String subLeague);
 	List<BattleLog> getBattleLogsByLeague(String id, String league);
 }
