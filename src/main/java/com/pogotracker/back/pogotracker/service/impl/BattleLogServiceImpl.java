@@ -70,39 +70,47 @@ public class BattleLogServiceImpl implements BattleLogService {
 	}
 
 	@Override
-	public BattleStats getStats(String id, String league, String subLeague) {
-		XPTracker xpTracker = xpTrackerRepository.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException("XPTracker not found for id: " + id));
+	public BattleStats getStats(String id, String league, String subLeague, Integer season) {
+	    XPTracker xpTracker = xpTrackerRepository.findById(id)
+	            .orElseThrow(() -> new EntityNotFoundException("XPTracker not found for id: " + id));
 
-		List<BattleLog> logs = xpTracker.getBattleLog();
+	    List<BattleLog> logs = xpTracker.getBattleLog();
 
-		if (logs == null || logs.isEmpty()) {
-			throw new NoBattleLogException("No battle logs found for player: " + id);
-		}
+	    if (logs == null || logs.isEmpty()) {
+	        throw new NoBattleLogException("No battle logs found for player: " + id);
+	    }
 
-		List<BattleLog> filteredLogs;
-		if ("all".equalsIgnoreCase(league)) {
-			filteredLogs = logs;
-		} else {
-			filteredLogs = logs.stream()
-					.filter(log -> league.equalsIgnoreCase(log.getLeague())
-							&& (subLeague == null || subLeague.equalsIgnoreCase(log.getSubLeague())))
-					.collect(Collectors.toList());
-		}
+	    List<BattleLog> filteredLogs;
 
-		int totalVictories = filteredLogs.stream().mapToInt(BattleLog::getVictories).sum();
-		int totalDefeats = filteredLogs.stream().mapToInt(BattleLog::getDefeats).sum();
-		int totalSets = filteredLogs.size();
+	    if (season != null) {
+	        filteredLogs = logs.stream()
+	                .filter(log -> log.getSeason() == season)
+	                .collect(Collectors.toList());
+	    } else {
+	        if ("all".equalsIgnoreCase(league)) {
+	            filteredLogs = logs;
+	        } else {
+	            filteredLogs = logs.stream()
+	                    .filter(log -> league.equalsIgnoreCase(log.getLeague())
+	                            && (subLeague == null || subLeague.equalsIgnoreCase(log.getSubLeague())))
+	                    .collect(Collectors.toList());
+	        }
+	    }
 
-		double winRate = totalSets > 0 ? (double) totalVictories / (totalSets * 5) * 100 : 0;
-		int totalBattles = totalVictories + totalDefeats;
-		double winRatio = totalBattles > 0 ? (double) totalVictories / totalBattles : 0;
+	    int totalVictories = filteredLogs.stream().mapToInt(BattleLog::getVictories).sum();
+	    int totalDefeats = filteredLogs.stream().mapToInt(BattleLog::getDefeats).sum();
+	    int totalSets = filteredLogs.size();
 
-		double averageElo = filteredLogs.stream().mapToInt(BattleLog::getElo).average().orElse(0);
+	    double winRate = totalSets > 0 ? (double) totalVictories / (totalSets * 5) * 100 : 0;
+	    int totalBattles = totalVictories + totalDefeats;
+	    double winRatio = totalBattles > 0 ? (double) totalVictories / totalBattles : 0;
 
-		return new BattleStats(league, subLeague, totalVictories, totalDefeats, totalSets, winRate, winRatio,
-				totalBattles, averageElo);
+	    double averageElo = filteredLogs.stream().mapToInt(BattleLog::getElo).average().orElse(0);
+
+	    return new BattleStats(league, subLeague, totalVictories, totalDefeats, totalSets, winRate, winRatio,
+	            totalBattles, averageElo);
 	}
+
 
 	@Override
 	public XPTracker updateBattleLog(String id, BattleLog updatedLog) {

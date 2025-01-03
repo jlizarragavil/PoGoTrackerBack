@@ -11,7 +11,7 @@ public interface BattleLogService {
 	XPTracker addBattleLog(String id, BattleLog battleLog);
 	List<BattleLog> getBattleLog(String id);
 	int getLatestElo(String id);
-	BattleStats getStats(String id, String league, String subLeague);
+	BattleStats getStats(String id, String league, String subLeague, Integer season);
 	XPTracker updateBattleLog(String id, BattleLog updatedLog);
 	List<BattleLog> getBattleLogsByDateRange(String id, Date startDate, Date endDate);
 	XPTracker resetBattleLogs(String id);

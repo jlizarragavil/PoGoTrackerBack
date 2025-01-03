@@ -68,8 +68,9 @@ public class BattleLogController {
     public ResponseEntity<BattleStats> getStats(
             @PathVariable String id, 
             @RequestParam(required = false, defaultValue = "all") String league,
-            @RequestParam(required = false) String subLeague) {
-        BattleStats stats = battleLogService.getStats(id, league, subLeague);
+            @RequestParam(required = false) String subLeague,
+            @RequestParam(required = false) Integer season) {
+        BattleStats stats = battleLogService.getStats(id, league, subLeague, season);
         return ResponseEntity.ok(stats);
     }
 	
