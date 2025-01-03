@@ -42,6 +42,15 @@ public class BattleLogServiceImpl implements BattleLogService {
 			return xpTrackerRepository.save(xpTracker);
 		}).orElseGet(() -> xpTrackerRepository.save(createNewXPTracker(id, battleLog)));
 	}
+	
+	@Override
+	public List<BattleLog> getBattleLogsBySeason(String id, int season) {
+	    return xpTrackerRepository.findById(id)
+	            .map(xpTracker -> xpTracker.getBattleLog().stream()
+	                    .filter(log -> log.getSeason() == season)
+	                    .collect(Collectors.toList()))
+	            .orElseThrow(() -> new EntityNotFoundException("XPTracker not found for id: " + id));
+	}
 
 	@Override
 	public List<BattleLog> getBattleLog(String id) {

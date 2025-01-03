@@ -18,4 +18,5 @@ public interface BattleLogService {
 	XPTracker deleteBattleLogEntry(String id, String date);
 	List<BattleLog> getBattleLogsByLeagueAndSubLeague(String id, String league, String subLeague);
 	List<BattleLog> getBattleLogsByLeague(String id, String league);
+	public List<BattleLog> getBattleLogsBySeason(String id, int season);
 }

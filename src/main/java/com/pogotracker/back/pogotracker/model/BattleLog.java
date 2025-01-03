@@ -12,6 +12,15 @@ public class BattleLog {
 	private int elo;
 	private int battlesInSet;
 	private int setNumber;
+	private int season;
+
+	public int getSeason() {
+	    return season;
+	}
+
+	public void setSeason(int season) {
+	    this.season = season;
+	}
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private Date date;

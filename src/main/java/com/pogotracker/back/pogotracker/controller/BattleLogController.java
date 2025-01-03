@@ -45,6 +45,13 @@ public class BattleLogController {
 				: ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 	
+	@GetMapping("/{id}/battle-log/season/{season}")
+	public ResponseEntity<List<BattleLog>> getBattleLogsBySeason(@PathVariable String id, @PathVariable int season) {
+	    List<BattleLog> battleLogs = battleLogService.getBattleLogsBySeason(id, season);
+	    return battleLogs != null && !battleLogs.isEmpty() ? ResponseEntity.ok(battleLogs)
+	            : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	}
+	
 	@GetMapping("/{id}/battles")
     public ResponseEntity<List<BattleLog>> getBattleLog(@PathVariable String id) {
         List<BattleLog> battleLogs = battleLogService.getBattleLog(id);
