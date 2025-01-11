@@ -2,6 +2,7 @@ package com.pogotracker.back.pogotracker.services;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.pogotracker.back.pogotracker.dto.BattleStats;
 import com.pogotracker.back.pogotracker.entity.XPTracker;
@@ -12,7 +13,7 @@ public interface BattleLogService {
 	List<BattleLog> getBattleLog(String id);
 	int getLatestElo(String id);
 	BattleStats getStats(String id, String league, String subLeague, Integer season);
-	XPTracker updateBattleLog(String id, BattleLog updatedLog);
+	XPTracker patchBattleLog(String id, Map<String, Object> updates);
 	List<BattleLog> getBattleLogsByDateRange(String id, Date startDate, Date endDate);
 	XPTracker resetBattleLogs(String id);
 	XPTracker deleteBattleLogEntry(String id, String date);

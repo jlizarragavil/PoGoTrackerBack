@@ -2,6 +2,9 @@ package com.pogotracker.back.pogotracker.utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 import com.pogotracker.back.pogotracker.model.XPRecord;
@@ -34,4 +37,10 @@ public class XPTrackerUtils {
             currentRecord.setDailyXPDifference(dailyDifference);
         }
     }
+	
+	public static Date getBattleLogDate(String date) {
+		ZonedDateTime zonedDateTime = ZonedDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME);
+        
+        return Date.from(zonedDateTime.toInstant());
+	}
 }

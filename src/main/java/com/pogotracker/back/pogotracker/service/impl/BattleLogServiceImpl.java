@@ -1,5 +1,7 @@
 package com.pogotracker.back.pogotracker.service.impl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -7,6 +9,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -19,6 +22,7 @@ import com.pogotracker.back.pogotracker.entity.exceptions.NoBattleLogException;
 import com.pogotracker.back.pogotracker.model.BattleLog;
 import com.pogotracker.back.pogotracker.repository.XPTrackerRepository;
 import com.pogotracker.back.pogotracker.services.BattleLogService;
+import com.pogotracker.back.pogotracker.utils.XPTrackerUtils;
 
 @Service
 public class BattleLogServiceImpl implements BattleLogService {
@@ -111,21 +115,48 @@ public class BattleLogServiceImpl implements BattleLogService {
 	            totalBattles, averageElo);
 	}
 
-
 	@Override
-	public XPTracker updateBattleLog(String id, BattleLog updatedLog) {
-		return xpTrackerRepository.findById(id).map(xpTracker -> {
-			List<BattleLog> logs = xpTracker.getBattleLog();
-			for (int i = 0; i < logs.size(); i++) {
-				if (logs.get(i).getSetNumber() == updatedLog.getSetNumber()) {
-					logs.set(i, updatedLog);
-					break;
-				}
-			}
-			xpTracker.setBattleLog(logs);
-			return xpTrackerRepository.save(xpTracker);
-		}).orElseThrow(() -> new EntityNotFoundException("XPTracker not found for id: " + id));
+	public XPTracker patchBattleLog(String id, Map<String, Object> updates) {
+	    return xpTrackerRepository.findById(id).map(existingXPTracker -> {
+	        
+	       Date battleLogDate = XPTrackerUtils.getBattleLogDate(updates.get("date").toString());
+
+	        List<BattleLog> logs = existingXPTracker.getBattleLog();
+	        Optional<BattleLog> optionalLog = logs.stream()
+	                .filter(log -> log.getDate() != null && log.getDate().equals(battleLogDate))
+	                .findFirst();
+
+	        if (optionalLog.isPresent()) {
+	            BattleLog log = optionalLog.get();
+	            if(updates.get("elo") != null) {
+	            	log.setElo((int) updates.get("elo"));
+	            }
+	            
+	            if(updates.get("victories") != null) {
+	            	log.setVictories((int) updates.get("victories"));
+	            	log.setDefeats(5-(int) updates.get("victories"));
+	            }
+	            
+	            if(updates.get("league") != null) {
+	            	log.setLeague((String) updates.get("league"));
+	            }
+	            if(updates.get("subleague") != null) {
+	            	log.setSubLeague((String) updates.get("subleague"));
+	            }
+	            
+	            if(updates.get("season") != null) {
+	            	log.setSeason((int) updates.get("season"));
+	            }
+	            
+	        } else {
+	            throw new EntityNotFoundException("Error: " + battleLogDate);
+	        }
+
+	        existingXPTracker.setBattleLog(logs);
+	        return xpTrackerRepository.save(existingXPTracker);
+	    }).orElseThrow(() -> new EntityNotFoundException("XPTracker no encontrado para el ID: " + id));
 	}
+
 
 	@Override
 	public List<BattleLog> getBattleLogsByDateRange(String id, Date startDate, Date endDate) {
